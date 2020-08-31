@@ -7,20 +7,19 @@ const http = require('http');
 const PORT = 3000 || process.env.PORT
 const path = require('path')
 const socketio = require('socket.io')
-const mongo = require('mongodb').MongoClient
 
-var url = "mongodb://localhost:27017/Groupview";
 
 const formatMessage = require('./utils/message')
 const {userJoin, getCurrentUser, userLeave, getRoomUsers, setRoomKey, getRoomKey, getRooms} = require('./utils/users')
 const {getYouTubeSearch} = require('./utils/youtube')
 const {addVideo, getRoomPlaylist, nextVideo, getPlaylist, removeVid} = require("./utils/playlist");
+// Dont know why this is here commented to disable
 const { Console } = require('console');
 
 const server= http.createServer(app)
 const io = socketio.listen(server);
 
-const botName  = 'CHatBOT'
+const botName  = "Server"
 
 // Sets the static folder
 app.use(express.static(path.join(__dirname,'public')));
@@ -29,8 +28,6 @@ app.use('/io', express.static(__dirname + '/node_modules/socket.io-client/lib'))
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
   });
-
-
 
   //Run when client connects
   // THis is the initial connection for io
@@ -57,15 +54,13 @@ io.on("connection", (socket) => {
     
     socket.on('searchVideo', (msg)=>{
         //send data to youtube.js for key and get 
-    getYouTubeSearch(msg).then((data)=>{
-           //data.items[0]
-           socket.emit('searchResults', data)
-           //for(i=0;  i<= data.items.length-1; i++){
-            //   console.log(data.items[i])}
+        getYouTubeSearch(msg).then((data)=>{
+            //console.log(data.items[0])
+            socket.emit('searchResults', data)
         })
-    .catch((error)=>{
-        console.log(error)})
-      })
+        .catch((error)=>{
+            console.log(error)})
+    })
     
     
     //Listen for chatmessage
@@ -73,16 +68,12 @@ io.on("connection", (socket) => {
         const user = getCurrentUser(socket.id);
         io.to(user.room).emit('message',formatMessage(user.username,msg));
     })
-    //Check status of video then sync other users
-    // NOT FINISHED OR STARTED 
-    socket.on('youtubestart', ({username,room,playbackstatus})=>{
-        const currentVidStatus= playbackstatus   
-    });
+    
 
     //Listen for added video to playlist
     socket.on("add_video", (video_id, videoName)=>{
         const user = getCurrentUser(socket.id);
-        addVideo(user.room,video_id,videoName)
+        addVideo(user.room,video_id,videoName) 
         getRoomPlaylist(user.room).then((data)=>{
             io.to(user.room).emit('update_playlist', data)})
         .catch((error)=>{
@@ -111,14 +102,11 @@ io.on("connection", (socket) => {
     socket.on("playingVideo",(data)=>{
         
     })
+
+
     socket.on('getCurrentTime',async (playstatus,currtime,currvideo,room) =>{
-        //console.log("ITWOKRS")
         var playlist = getPlaylist(room)
-        //console.log(playstatus,currtime,currvideo,room)
-        //console.log(currvideo, playlist[0][0].id)
-        
         if (playstatus == 1 && currvideo == playlist[0][0].id ){
-            //console.log("TEST")
             socket.broadcast.to(room).emit('updatePlayTime',currtime, currvideo)
         } else if(playstatus == 0 && currvideo == playlist[0][0].id) {
             console.log("changing video " +playlist[0][1].id )
@@ -156,12 +144,10 @@ function controlPlay(){
 // video to insure everyone is on the same video.
     function playercontrol(room){
         var user = getRoomKey(room)
-        
         io.to(user.id).emit("getCurrentTime")
-        //console.log(user)
-        
     }
 }
 
 setInterval(controlPlay,3000)
+
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

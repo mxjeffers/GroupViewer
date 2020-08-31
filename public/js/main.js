@@ -1,3 +1,4 @@
+
 const chatForm = document.getElementById('chat-form');
 const socket = io();
 const chatMessages = document.querySelector('.chat-messages');
@@ -6,6 +7,7 @@ const userList = document.getElementById('users')
 const searchSubmit = document.getElementById('search_video')
 const searchResult = document.getElementById('results')
 const domPlaylist = document.getElementById('playlist-main')
+
 //Get USername and room from URL
 const {username, room} = Qs.parse(location.search,{ignoreQueryPrefix: true});
 
@@ -13,9 +15,11 @@ const {username, room} = Qs.parse(location.search,{ignoreQueryPrefix: true});
 const SyncDelay = 5
 
 var data = { name : username,
-                room: room}
+                room: room};
+
+//Stores the current playing video id
 var playing;
-console.log(data)
+
 //Join Chatroom
 // Send username and room that user joined to server
 // THis is sent from a GET request from the index page
@@ -41,11 +45,34 @@ socket.on('searchResults', searchlist =>{
     outputVideoSearch(searchlist)
 })
 
+//Output the list of videos to the DOM 
+function outputVideoSearch(searchList){
+    //searchList is an object with items
+    //iterate through items
+    //Outputs the search results with picture, title, and a add button
+    //add button has the video Id as the value
+    //Change this to get the photo using video id and med img
+    searchResult.innerHTML = `${searchList.items.map(results =>`<li class="searchResult">
+    <img src = "https://i.ytimg.com/vi/${results.id.videoId}/mqdefault.jpg">
+    ${results.snippet.title}<button type="button" class="search-button" value =${results.id.videoId}>Add</button></li>`).join('')}
+    `;
+};
+
+
 //Update Playlist
 socket.on('update_playlist', playlist =>{
     updatePlaylist(playlist)
 })
 
+function updatePlaylist(playlist){
+    domPlaylist.innerHTML=`
+    ${playlist.map(playlist =>`<li class = "playlist-result"><img src=${playlist.image}><div class= playlist-text>${playlist.name}</div></li>`).join("")}`
+    try{
+    if(domPlaylist.children[0].innerHTML != undefined){
+        domPlaylist.children[0].innerHTML+= "<div class=playlist-first>Currently Playing</div>"
+    }}
+    catch(err){}
+}
 
 //UPdates the videos current playtime. need to check that
 // the same video is playing
@@ -53,6 +80,7 @@ socket.on('updatePlayTime',(currtime, currvideo) =>{
     console.log("Got it")
     updatePlayTime(currtime,currvideo)
 })
+
 function updatePlayTime(currtime,currvideo){
     var elapsed = player.getCurrentTime()
     console.log('elapsed' + elapsed)
@@ -79,18 +107,7 @@ function Changevideo(nextvid){
     playing = nextvid;
 
 }
-//Send current playstatus to server CUrrently not used
-/*function playStatus(data){
-     data.playstatus = player.getPlayerState()
-     data.currentTime = player.getCurrentTime()
-     console.log(data) 
-    if (data.playStatus != 1){
-        return
-    } else {
-        //send message to server with updates
-    }
 
-    }*/
 /*PlayStatus numbers
 -1 – unstarted
 0 – ended
@@ -123,17 +140,6 @@ function outputMessage(message){
 
     document.querySelector('.chat-messages').appendChild(div);
 };
-//Output the list of videos to the DOM 
-function outputVideoSearch(searchList){
-    //searchList is an object with items
-    //iterate through items
-    //Outputs the search results with picture, title, and a add button
-    //add button has the video Id as the value
-    searchResult.innerHTML = `${searchList.items.map(results =>`<li>
-    <img src = ${results.snippet.thumbnails.default.url}> 
-    <h2>${results.snippet.title}</h2><button type="button" class="search-button" value =${results.id.videoId}>Add</button></li>`).join('')}
-    `;
-};
 
 
 
@@ -153,24 +159,14 @@ function outputUsers(users){
 // item to the playslits and clear the search box.
 searchResult.onclick = function(event){
     let target = event.target;
-    
     if (target.className == "search-button"){
-            //do stuff send info to server
-            
-            
             var videoName =(target.parentNode.childNodes[3].innerText)
-            console.log(target.value)
+            //value is video id, videoname is the vid name/description
             socket.emit("add_video",target.value,videoName)
     }
 }
 
-function updatePlaylist(playlist){
-    //console.log("updateplaylist############")
-   // console.log(playlist)
-    domPlaylist.innerHTML=`
-    ${playlist.map(playlist =>`<ol><img src=${playlist.image}>
-    <h5> ${playlist.name}<h5></ol>`).join('')}`
-}
+
 
 function getPlaylist(room){
     socket.emit("get_playlist", room)
@@ -181,40 +177,28 @@ getPlaylist(room)
 
 function getNextVideo(room){
     socket.emit("nextVideo",room)
-
 }
+
+
 //Sends the server the playerstatus, current time and the videocode.
 socket.on("getCurrentTime",() =>{
-    /*var url = player.getVideoUrl();
-    var videoid = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
-    if(videoid != null) {
-   console.log("video id = ",videoid);
-} else { 
-    console.log("The youtube url is not valid.");
-}*/
-//Try block added since the server will call before the yt player is loaded
 try{
     socket.emit("getCurrentTime",player.getPlayerState(),player.getCurrentTime(),
     playing,room)}
     catch(err){}
- })
-
-
+})
 
 socket.on("nextVideo", video =>{
-    //console.log(video)
     playing = video.id
     player.loadVideoById(video.id)
 })
+
 ///YOUTUBE SECTION
 
 var tag = document.createElement('script');
-
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-
 var player;
 
 function onYouTubeIframeAPIReady() {
@@ -222,7 +206,7 @@ function onYouTubeIframeAPIReady() {
     height: '720',
     width: '1280',
     playerVars: {'controls' : '1'},
-    //videoId: '',
+    //videoId: '', No Video ID, Start on a blank player
     events: {
         'onReady': onPlayerReady,
         'onStateChange': onPlayerStateChange
@@ -232,11 +216,14 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(event) {
     event.target.pauseVideo(); //DONT USE ONLY for not playing anymore videos
-    //console.log(player.PlayerState())
+    //Breaks video autoplay for debug throws this error Uncaught TypeError: player.PlayerState is not a function
+    console.log(player.PlayerState())
+    //console.log(player)
     getNextVideo(room)
     //playStatus(data) NOT USED
   }
 
+  //FIXME is this even needed? done?
   var done = false;
   function onPlayerStateChange(event) {
 
@@ -246,10 +233,6 @@ function onPlayerReady(event) {
       done = false;
     }
   }
-  function stopVideo() {
-    player.stopVideo();
-  }
-
 
 searchSubmit.addEventListener('submit',(e)=>{
     e.preventDefault();

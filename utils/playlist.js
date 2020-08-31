@@ -9,19 +9,10 @@ var url = "mongodb://localhost:27017/Groupview";
 function addVideo(room,videoid,videoName){
     var video = {
                     name: videoName,
-                    image: "https://i.ytimg.com/vi/" + videoid + "/default.jpg",
+                    image: "https://i.ytimg.com/vi/" + videoid + "/mqdefault.jpg",
                     id: videoid
     };
-   /* 
-    if (playlist[room] === undefined){
-        
-        playlist[room] = []
 
-    }
-    //console.log(playlist)
-    playlist[room].push(video)
-    //console.log(playlist)*/
-    
     MongoCLient.connect(url,{ useUnifiedTopology: true }, function(err,db){
         if (err) throw err;
         var dbo = db.db("Groupview")
@@ -30,11 +21,7 @@ function addVideo(room,videoid,videoName){
             console.log("one item added");
             db.close(); 
         })
-    })
-
-    //Next make playlist update to each room with broadcast.
-    //playlist.push(video);
-    
+    })    
 }
 
 
@@ -46,12 +33,9 @@ function getRoomPlaylist(room){
         var dbo =db.db("Groupview")
         dbo.collection(room).find({}).toArray(function(err,results){
             if(err) reject(err);
-            //console.log(results);
             db.close();
-            //if (playlist[room] === undefined){
-             playlist[room] = [] 
+            playlist[room] = [] 
             playlist[room].push(results.slice(0,2))
-            //console.log(results)
             resolve(results)
         })
     })
@@ -59,24 +43,18 @@ function getRoomPlaylist(room){
 )})}
 
 //Need to rename to get current video
-//dont work db.getCollection().find({}).skip(1).limit(1)
 function nextVideo(room){
     return new Promise((resolve,reject)=>{
         (MongoCLient.connect(url,{useUnifiedTopology:true}, function(err,db){
             if (err) throw err;
             var dbo = db.db("Groupview")
             results = dbo.collection(room).findOne({}, function(err,result){
-              
                 if (err) reject (err);
                     db.close();
-                    //console.log(result)
                     resolve(result)
-                })
-            
-            }
-    ))
+            })
+        }))
     })
-
 }
 
 function getPlaylist(room){
