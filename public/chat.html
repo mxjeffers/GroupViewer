@@ -12,50 +12,74 @@
   <title>GroupViewer</title>
 </head>
 <body>
-  <div class="flex-container">
-  <div class="chat-container">
-    <header class="chat-header">
-      <h1><i class="fas fa-smile"></i> GroupViewer</h1>
-      <a href="index.html" class="btn">Leave Room</a>
-    </header>
-    <main class="chat-main">
-      <div class="chat-sidebar">
-        <h5><i class="fas fa-comments"></i> Room Name:</h5>
-        <h2 id="room-name"></h2>
-        <h3><i class="fas fa-users"></i> Users</h3>
-        <ul id="users"></ul>
-      </div>
-      <div class="chat-messages">
-					</div>
-    </main>
-    <div class="chat-form-container">
-      <form id="chat-form">
-        <input
-          id="msg"
-          type="text"
-          placeholder="Enter Message"
-          required
-          autocomplete="off"
-        />
-        <button class="btn"><i class="fas fa-paper-plane"></i> Send</button>
-      </form>
-    </div>
+  <div class="container-fluid no-gutters">
+    <div class="row">
+      <div class="col-3">
+        <div class="chat-container">
+          <header class="chat-header">
+            <!--
+            <h1><i class="fas fa-smile"></i> GroupViewer</h1>
+            <a href="index.html" class="btn">Leave Room</a>
+            -->
+            <ul class="nav nav-pills" id="myTab" role="tablist">
+              <li>
+                <a href="#chat-tab-data" class="nav-link active" id="chat-tab" data-toggle="pill" role="tab" aria-controls="chat-tab-data" aria-selected="true">Chat</a>
+              </li>
+              <li class="nav-item waves-effect waves-light">
+                <a href="#users-tab-data" class="nav-link" id="user-tab-md" data-toggle="pill" role="tab" aria-controls="users-tab-data" aria-selected="false">Users</a>
+              </li>
+              <li class="nav-item waves-effect waves-light">
+                <a href="" class="nav-link" id="search-tab" data-toggle="pill" role="tab">Video Search</a>
+              </li>
+            </ul>
+          </header>
+          <main class="chat-main">
+            <div class="tab-content" id ="myTabContent">
+            <div class="tab-pane fade in active" id="chat-tab-data" role="tabpanel">
+            
+            <div class="chat-messages">
+            </div>
+          </div>
+          <div class="tab-pane fade" id="users-tab-data" role="tabpanel">
+            <div class="chat-sidebar">
+              <h5><i class="fas fa-comments"></i> Room Name:</h5>
+              <h2 id="room-name"></h2>
+              <h3><i class="fas fa-users"></i> Users</h3>
+              <ul id="users"></ul>
+            </div>
+            <h5>IT WORKS BITCH</h5>
+          </div>
+        </div>
+          </main>
+          <div class="chat-form-container">
+            <form id="chat-form">
+              <input
+                id="msg"
+                type="text"
+                placeholder="Enter Message"
+                required
+                autocomplete="off"
+              />
+              <button class="btn"><i class="fas fa-paper-plane"></i> Send</button>
+            </form>
+          </div>
         </div>
       
-    
-    
-    <div class="iframe-container">
+      </div>
+    <div class="col-9">
+      <div class="embed-responsive embed-responsive-16by9">
         <div id="player"></div>
+        </div>
+    
+      <div class="playlist">
+        <header class="playlist-header">
+          <h1>Playlist</h1>
+        </header>
+        <div id="playlist-main"></div>
+      </div>
     </div>
     </div>
-    <div class="playlist">
-      <header class="playlist-header">
-        <h1>Playlist</h1>
-      </header>
-      <div id="playlist-main"></div>
-      
-    </div>
-
+  </div>
     <div class="youtube-playlist-container">
       <form id="search_video">
         <input
@@ -73,7 +97,8 @@
 
         </div>
       </div>
-    </div>  <script src=https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js></script>
+    </div>  
+  <script src=https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/main.js"></script>
 </body>
