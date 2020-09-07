@@ -53,8 +53,8 @@ function outputVideoSearch(searchList){
     //add button has the video Id as the value
     //Change this to get the photo using video id and med img
     searchResult.innerHTML = `${searchList.items.map(results =>`<li class="searchResult">
-    <img src = "https://i.ytimg.com/vi/${results.id.videoId}/mqdefault.jpg">
-    ${results.snippet.title}<button type="button" class="search-button" value =${results.id.videoId}>Add</button></li>`).join('')}
+    <img src = "https://i.ytimg.com/vi/${results.id.videoId}/mqdefault.jpg"><br>
+    ${results.snippet.title}<br><button type="button" class="search-button" value =${results.id.videoId}>Add</button></li>`).join('')}
     `;
 };
 

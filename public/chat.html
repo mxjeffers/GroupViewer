@@ -14,7 +14,21 @@
 <body>
   <div class="container-fluid no-gutters">
     <div class="row">
+      
+      <div class="col-9">
+        <div class="embed-responsive embed-responsive-16by9">
+          <div id="player"></div>
+          </div>
+      
+        <div class="playlist">
+          <header class="playlist-header">
+            <h4>Current Playlist</h4>
+          </header>
+          <div id="playlist-main"></div>
+        </div>
+      </div>
       <div class="col-3">
+        
         <div class="chat-container">
           <header class="chat-header">
             <!--
@@ -29,13 +43,13 @@
                 <a href="#users-tab-data" class="nav-link" id="user-tab-md" data-toggle="pill" role="tab" aria-controls="users-tab-data" aria-selected="false">Users</a>
               </li>
               <li class="nav-item waves-effect waves-light">
-                <a href="" class="nav-link" id="search-tab" data-toggle="pill" role="tab">Video Search</a>
+                <a href="#search-tab-data" class="nav-link" id="search-tab" data-toggle="pill" role="tab">Video Search</a>
               </li>
             </ul>
           </header>
           <main class="chat-main">
             <div class="tab-content" id ="myTabContent">
-            <div class="tab-pane fade in active" id="chat-tab-data" role="tabpanel">
+            <div class="tab-pane fade in active show" id="chat-tab-data" role="tabpanel">
             
             <div class="chat-messages">
             </div>
@@ -47,7 +61,26 @@
               <h3><i class="fas fa-users"></i> Users</h3>
               <ul id="users"></ul>
             </div>
-            <h5>IT WORKS BITCH</h5>
+          </div>
+          <div class="tab-pane fade" id="search-tab-data" role="tabpanel">
+            <div class="youtube-playlist-container">
+              <form id="search_video">
+                <input
+                id="search_video"
+                type="text"
+                placeholder="Enter Youtube video URL"
+                />
+                <button class="btn">Submit</button>
+                
+              </form>
+              
+                
+                  <header class="results-header"><h1>Results</h1></header>
+                  <ul id='results'></ul>
+        
+                
+              
+            </div> 
           </div>
         </div>
           </main>
@@ -66,38 +99,9 @@
         </div>
       
       </div>
-    <div class="col-9">
-      <div class="embed-responsive embed-responsive-16by9">
-        <div id="player"></div>
-        </div>
-    
-      <div class="playlist">
-        <header class="playlist-header">
-          <h1>Playlist</h1>
-        </header>
-        <div id="playlist-main"></div>
-      </div>
-    </div>
     </div>
   </div>
-    <div class="youtube-playlist-container">
-      <form id="search_video">
-        <input
-        id="search_video"
-        type="text"
-        placeholder="Enter Youtube video URL"
-        />
-        <button class="btn">Submit</button>
-        
-      </form>
-      <div>
-        <div class="results-container">
-          <header class="results-header"><h1>Results</h1></header>
-          <ul id='results'></ul>
-
-        </div>
-      </div>
-    </div>  
+     
   <script src=https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.4/qs.min.js></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/main.js"></script>

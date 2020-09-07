@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
 :root {
-	--dark-color-a: #04105f;
-	--dark-color-b: #390b6d;
+	--dark-color-a: #121212;
+	--dark-color-b: #400115;
 	--light-color: #b2b5ce;
 	--success-color: #5cb85c;
 	--error-color: #d9534f;
-	--background-color: #26262c;
+	--background-color: #252525;
 }
 
 * {
@@ -49,34 +49,46 @@ a {
 
 /* Chat Page */
 
- .results-container,
+
 .youtube-playlist-container{
 	max-width: 1100px;
 	background: #fff;
-	margin: 30px auto;
 	overflow: hidden;
+	height: 100%;
+}
+
+.results-container{
+	max-width: 1100px;
+	background: #fff;
+	margin: 30px auto;
+	height: 100%;	
 }
 
 .playlist{
-	overflow: hidden;
+	/*overflow: hidden;*/
 	background: white;
-
 }
 
+#results{
+	margin-bottom: 70px;
+    overflow-y: scroll;
+	height: calc(100% - 125px);
+	padding-bottom: 50px;
+}
 #playlist-main{
 	overflow-x: scroll;
 	height: auto;
 	width: auto;
 	/*This keeps the playlist from making another line */
 	white-space: nowrap;
-	
-}
-.tab-content{
-	width: 500px;
-	display: flex;
 }
 
-#chat-tab-data{
+.tab-content{
+	width: 500px;
+	display: block;
+}
+
+#chat-tab-data, #users-tab-data, #search-tab-data{
 	width: 100%;
 }
 .playlist-result{
@@ -86,15 +98,15 @@ a {
 	overflow: visible;
 	vertical-align: top;
 	opacity: 90%;
-	
 }
+
 .playlist-first{
 	top: -230px;
 	position: relative;
 	background-color: black;
 	color: white;
-
 }
+
 .playlist-text{
 	background-color: grey;
 	position: relative;
@@ -114,26 +126,30 @@ a {
 	opacity: 80%;
 }
 
-.flex-container{
-	display: flex;
+.flex-container, .container{
+	display: block;
+	
 }
 
 
 .iframe-container{
 	margin-left: 30px;
-	max-width: 1280px;
+	max-width: 1000px;
 	flex: 4;
 }
 
 .chat-container{
 	max-width: 500px;
 	width: 100%;
-	height: 100%;
+	height: 80vh;
 	position: relative;
-	display: flex;
-	
+	display: block;
+	min-width: 300px;
+	max-height: inherit;
+	overflow: hidden;
 	
 }
+
 .chat-header{
 	background: var(--dark-color-a);
 	color: rgb(255, 255, 255);
@@ -154,23 +170,22 @@ a {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
-	position: absolute;
-	
+	width: 100%;	
 }
 
 .chat-main, .results-main {
-	padding-top: 50px;
+	margin-top: 50px;
 	max-width: 1100px;
-	overflow: hidden;
-	height:(100% - 200px);
+	
+	height:100%;
 	display: flex;
 	padding-bottom: 40px;
+	
 	
 }
 .tab-content{
 	display: flex;
-	
+	min-height: 0;
 }
 
 .chat-sidebar {
@@ -181,8 +196,6 @@ a {
 	width: 100%;
 	height: 100%;
 	float: left;
-	
-	
 }
 
 .chat-sidebar h2 {
@@ -200,10 +213,10 @@ a {
 	padding: 10px 0;
 }
 
-.chat-messages, .results-main{
-	padding: 30px;
-	height: 100%;
-	width: 100%;
+.chat-messages,tab-pane, .results-main{
+	padding: 20px;
+	height: calc(100% - 45px);
+	width: auto;
 	overflow-y: scroll;
 }
 
@@ -232,7 +245,6 @@ a {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
-	
 }
 
 .chat-form-container form {
@@ -247,7 +259,7 @@ a {
 }
 
 .searchResult{
-	font-size: 24px;
+	font-size: 12px;
 }
 
 /* Join Page */
