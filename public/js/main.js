@@ -54,7 +54,7 @@ function outputVideoSearch(searchList){
     //Change this to get the photo using video id and med img
     searchResult.innerHTML = `${searchList.items.map(results =>`<li class="searchResult">
     <img src = "https://i.ytimg.com/vi/${results.id.videoId}/mqdefault.jpg"><br>
-    ${results.snippet.title}<br><button type="button" class="search-button" value =${results.id.videoId}>Add</button></li>`).join('')}
+    <span>${results.snippet.title}</span><br><button type="button" class="search-button" value =${results.id.videoId}>Add</button></li>`).join('')}
     `;
 };
 
@@ -160,7 +160,8 @@ function outputUsers(users){
 searchResult.onclick = function(event){
     let target = event.target;
     if (target.className == "search-button"){
-            var videoName =(target.parentNode.childNodes[3].innerText)
+            var videoName =(target.parentNode.childNodes[4].innerText)
+            console.log(target.parentNode.childNodes[4].innerText)
             //value is video id, videoname is the vid name/description
             socket.emit("add_video",target.value,videoName)
     }

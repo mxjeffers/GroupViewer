@@ -71,18 +71,18 @@ io.on("connection", (socket) => {
     
 
     //Listen for added video to playlist
-    socket.on("add_video", (video_id, videoName)=>{
+    socket.on("add_video", async (video_id, videoName)=>{
         const user = getCurrentUser(socket.id);
-        addVideo(user.room,video_id,videoName) 
+        await addVideo(user.room,video_id,videoName) 
         getRoomPlaylist(user.room).then((data)=>{
-            io.to(user.room).emit('update_playlist', data)})
+            io.in(user.room).emit('update_playlist', data)})
         .catch((error)=>{
             console.log(error)})
         });
     
     socket.on("get_playlist", (room) =>{
         getRoomPlaylist(room).then((data)=>{
-            io.to(room).emit('update_playlist', data)})
+            io.in(room).emit('update_playlist', data)})
         .catch((error)=>{
             console.log(error)})
     })
