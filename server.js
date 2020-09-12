@@ -69,7 +69,6 @@ io.on("connection", (socket) => {
         io.to(user.room).emit('message',formatMessage(user.username,msg));
     })
     
-
     //Listen for added video to playlist
     socket.on("add_video", async (video_id, videoName)=>{
         const user = getCurrentUser(socket.id);
@@ -97,28 +96,30 @@ io.on("connection", (socket) => {
 
     }) 
     
-    //Check playing status
-    //data contains username,room,playstatus,current playtime
-    socket.on("playingVideo",(data)=>{
-        
-    })
-
-
+   
     socket.on('getCurrentTime',async (playstatus,currtime,currvideo,room) =>{
         var playlist = getPlaylist(room)
+        if (playlist[0][0] == undefined){
+            return //If playlist is empty
+        }
         if (playstatus == 1 && currvideo == playlist[0][0].id ){
             socket.broadcast.to(room).emit('updatePlayTime',currtime, currvideo)
         } else if(playstatus == 0 && currvideo == playlist[0][0].id) {
-            console.log("changing video " +playlist[0][1].id )
-            io.in(room).emit('changeVideo', playlist[0][1].id)
-            await removeVid(room)
-            getRoomPlaylist(room).then((data)=>{
-                io.to(room).emit('update_playlist', data)})
-            .catch((error)=>{
-                console.log(error)})
+            changeVid(room,playlist,currvideo)
+                
+        } else if((playstatus == 5 && playlist[0][0].id != undefined) ||
+                    (playstatus == 0 && playlist[0][0] != undefined)){
+                        io.in(room).emit('changeVideo', playlist[0][0].id)
+        } else if (playstatus == -1){
+            if(timewaiting.next().value % 2 == 0){
+            {
+                changeVid(room,playlist,currvideo)
+                } 
+            }
         }
     })
 
+    
     //Runs when client disconnects update roomkey
     socket.on('disconnect', ()=>{
         const user = userLeave(socket.id);
@@ -148,6 +149,35 @@ function controlPlay(){
     }
 }
 
+let timewaiting = unstartSkip()
+
+function* unstartSkip(){
+        n = 0
+        while(true){
+            n ++;
+            yield n;
+        }}
+
+async function changeVid(room,playlist,currvideo){
+    if (playlist[0][1] != undefined){
+        io.in(room).emit('changeVideo', playlist[0][1].id)
+        await removeVid(room)
+        getRoomPlaylist(room).then((data)=>{
+            io.in(room).emit('update_playlist', data)})
+        .catch((error)=>{
+            console.log(error)})
+} 
+else {  //If the last video played remove from playlist
+        if((currvideo != playlist[0][0].id) && playlist[0][0].id != undefined){
+            io.in(room).emit('changeVideo', playlist[0][0].id)
+        }
+        await removeVid(room);
+        getRoomPlaylist(room).then((data)=>{
+            io.in(room).emit('update_playlist', data)})
+        .catch((error)=>{
+            console.log(error)})}
+}
+    
 setInterval(controlPlay,3000)
 
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

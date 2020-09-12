@@ -101,7 +101,7 @@ a {
 }
 
 .playlist-first{
-	top: -230px;
+	top: -224px;
 	position: relative;
 	background-color: black;
 	color: white;
@@ -120,6 +120,7 @@ a {
 	overflow: hidden;
 	opacity: 0%;
 	transition: 1.0s;
+	font-size: 14px;
 }
 
 .playlist-result:hover > .playlist-text{

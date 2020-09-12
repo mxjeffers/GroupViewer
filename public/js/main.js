@@ -102,9 +102,9 @@ socket.on('changeVideo', nextvid=>{
 })
 
 function Changevideo(nextvid){
-    //console.log("tyring "+ nextvid)
     player.loadVideoById({videoId:nextvid})
     playing = nextvid;
+    
 
 }
 
@@ -167,8 +167,6 @@ searchResult.onclick = function(event){
     }
 }
 
-
-
 function getPlaylist(room){
     socket.emit("get_playlist", room)
 }
@@ -184,14 +182,18 @@ function getNextVideo(room){
 //Sends the server the playerstatus, current time and the videocode.
 socket.on("getCurrentTime",() =>{
 try{
+    console.log(player.getPlayerState())
     socket.emit("getCurrentTime",player.getPlayerState(),player.getCurrentTime(),
     playing,room)}
     catch(err){}
 })
 
 socket.on("nextVideo", video =>{
+    try{
     playing = video.id
     player.loadVideoById(video.id)
+    player.playVideo()}
+    catch(err){}
 })
 
 ///YOUTUBE SECTION
@@ -206,7 +208,8 @@ function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
     height: '720',
     width: '1280',
-    playerVars: {'controls' : '1'},
+    'mute': 1,
+    //playerVars: {'controls' : '1'},
     //videoId: '', No Video ID, Start on a blank player
     events: {
         'onReady': onPlayerReady,
@@ -216,24 +219,24 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-    event.target.pauseVideo(); //DONT USE ONLY for not playing anymore videos
+    //event.target.pauseVideo(); //DONT USE ONLY for not playing anymore videos
     //Breaks video autoplay for debug throws this error Uncaught TypeError: player.PlayerState is not a function
-    console.log(player.PlayerState())
+    //console.log(player.getPlayerState())
     //console.log(player)
     getNextVideo(room)
     //playStatus(data) NOT USED
   }
 
-  //FIXME is this even needed? done?
-  var done = false;
+ 
   function onPlayerStateChange(event) {
-
-    //use to get next video or start time tracking
-    if (event.data == YT.PlayerState.PLAYING && !done) {
-      //setTimeout(stopVideo, 6000);
-      done = false;
+        switch(event.data){
+            case -1: 
+                player.playVideo();
+            case 5:
+                player.playVideo();  
+        }
     }
-  }
+  
 
 searchSubmit.addEventListener('submit',(e)=>{
     e.preventDefault();
@@ -241,7 +244,8 @@ searchSubmit.addEventListener('submit',(e)=>{
 
     //send message to the server
     socket.emit("searchVideo", msg);
-
     //clear the input
     //e.target.elements.searchSubmit.value= "";
 })
+
+setInterval(getPlaylist(room),10000)

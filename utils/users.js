@@ -33,19 +33,12 @@ function getRoomUsers(room){
 function setRoomKey(room){
     newKey=getRoomUsers(room)
     roomkey[room] = newKey[Math.floor(Math.random() * newKey.length)]
-    //console.log("ROOMKEY")
-    //console.log(roomkey)
 }
 
 function getRoomKey(room){
     return roomkey[room]
 }
-/*
-function setRooms(room){
-    if(roomnames.includes(room)==false){
-        roomnames.push(room)
-    }
-}*/
+
 
 /*Get a set of roomnames. Reset roomnames then go through
  each user and get their room. Convert array to a Set.
@@ -55,10 +48,7 @@ function setRooms(room){
 function getRooms(){
     roomnames = []
     users.forEach(user => roomnames.push(user.room))
-    //console.log("GET ROOMS")
-    //console.log(""+ roomnames +'/n SETNAMES /n')
     roomnames= new Set(roomnames)
-    //console.log(roomnames)
     return roomnames
 }
 
