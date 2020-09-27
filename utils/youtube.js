@@ -46,7 +46,8 @@ function  getYouTubeSearch(msg){
                 reject(Error(xhr.statusText))
             }
         }
-    
+        
+        //Change maxResults to get more or less results
         //xhr.open('GET', 'https://www.googleapis.com/youtube/v3/search?type=video&part=snippet&order=viewCount&q=' + msg + '&maxResults=3&key='+ Key, true);
         //xhr.open('GET','https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=l4JkKr6O99A')
         xhr.open('GET', 'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q='+ msg+'&fields=items(id(videoId),snippet(title))&key=' + Key)

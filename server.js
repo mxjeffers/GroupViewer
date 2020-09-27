@@ -14,7 +14,7 @@ const {userJoin, getCurrentUser, userLeave, getRoomUsers, setRoomKey, getRoomKey
 const {getYouTubeSearch} = require('./utils/youtube')
 const {addVideo, getRoomPlaylist, nextVideo, getPlaylist, removeVid} = require("./utils/playlist");
 // Dont know why this is here commented to disable
-const { Console } = require('console');
+//const { Console } = require('console');
 
 const server= http.createServer(app)
 const io = socketio.listen(server);
@@ -96,7 +96,7 @@ io.on("connection", (socket) => {
 
     }) 
     
-   
+   //Recieves the current time of the roomkey leader.
     socket.on('getCurrentTime',async (playstatus,currtime,currvideo,room) =>{
         var playlist = getPlaylist(room)
         if (playlist[0][0] == undefined){
@@ -132,7 +132,7 @@ io.on("connection", (socket) => {
     }});//End of Disconnect
 });//END of Connection
 
-//Will repeat on server every 5 seconds
+//Will repeat on server every 3 seconds
 // Will use the roomkey to get current play time then send to other users
 // others will compare and adjust their time as needed.
 // room key will rotate every minute.
@@ -151,6 +151,8 @@ function controlPlay(){
 
 let timewaiting = unstartSkip()
 
+// Generator to determine if a video is unstarted for more than 
+// two cycles.
 function* unstartSkip(){
         n = 0
         while(true){

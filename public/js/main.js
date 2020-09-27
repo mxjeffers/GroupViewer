@@ -39,7 +39,7 @@ socket.on('message', message =>{
     //Scroll Down
     chatMessages.scrollTop = chatMessages.scrollHeight;
 });
-//https://www.youtube.com/watch?v=jD7FnbI76Hg paused at 13:16
+
 
 socket.on('searchResults', searchlist =>{
     outputVideoSearch(searchlist)
@@ -58,7 +58,6 @@ function outputVideoSearch(searchList){
     `;
 };
 
-
 //Update Playlist
 socket.on('update_playlist', playlist =>{
     updatePlaylist(playlist)
@@ -74,17 +73,18 @@ function updatePlaylist(playlist){
     catch(err){}
 }
 
-//UPdates the videos current playtime. need to check that
+//Updates the videos current playtime. need to check that
 // the same video is playing
 socket.on('updatePlayTime',(currtime, currvideo) =>{
-    console.log("Got it")
+    //console.log("Got it")
     updatePlayTime(currtime,currvideo)
 })
 
+
 function updatePlayTime(currtime,currvideo){
     var elapsed = player.getCurrentTime()
-    console.log('elapsed' + elapsed)
-    console.log('currtime' + currtime)
+    //console.log('elapsed' + elapsed)
+    //console.log('currtime' + currtime)
     if(playing == currvideo){
         if(elapsed > currtime + SyncDelay || elapsed < currtime - SyncDelay){
             if(player.getPlayerState() == 1){
@@ -101,11 +101,10 @@ socket.on('changeVideo', nextvid=>{
     Changevideo(nextvid)
 })
 
+//Changes the video on receiving a message form the server
 function Changevideo(nextvid){
     player.loadVideoById({videoId:nextvid})
     playing = nextvid;
-    
-
 }
 
 /*PlayStatus numbers
@@ -141,8 +140,6 @@ function outputMessage(message){
     document.querySelector('.chat-messages').appendChild(div);
 };
 
-
-
 // Change the Roomname text to the correct room
 function outputRoomname(room){
     roomName.innerText= room;
@@ -161,7 +158,7 @@ searchResult.onclick = function(event){
     let target = event.target;
     if (target.className == "search-button"){
             var videoName =(target.parentNode.childNodes[4].innerText)
-            console.log(target.parentNode.childNodes[4].innerText)
+            //console.log(target.parentNode.childNodes[4].innerText)
             //value is video id, videoname is the vid name/description
             socket.emit("add_video",target.value,videoName)
     }
@@ -182,7 +179,7 @@ function getNextVideo(room){
 //Sends the server the playerstatus, current time and the videocode.
 socket.on("getCurrentTime",() =>{
 try{
-    console.log(player.getPlayerState())
+    //console.log(player.getPlayerState())
     socket.emit("getCurrentTime",player.getPlayerState(),player.getCurrentTime(),
     playing,room)}
     catch(err){}
@@ -224,7 +221,6 @@ function onPlayerReady(event) {
     //console.log(player.getPlayerState())
     //console.log(player)
     getNextVideo(room)
-    //playStatus(data) NOT USED
   }
 
  
@@ -241,11 +237,11 @@ function onPlayerReady(event) {
 searchSubmit.addEventListener('submit',(e)=>{
     e.preventDefault();
     const msg = e.target.elements.search_video.value;
-
     //send message to the server
     socket.emit("searchVideo", msg);
     //clear the input
     //e.target.elements.searchSubmit.value= "";
 })
 
+//Update the playlist every 10 secs
 setInterval(getPlaylist(room),10000)
